@@ -47,6 +47,3 @@ filtered_df = filtered_df[['valence','acousticness','danceability','duration_ms'
 
 #export with labels
 filtered_df.to_csv("filtered_data_set.csv", index = False)
-
-# Export data to csv
-np.savetxt("filtered_data_set.csv", filtered_df, delimiter=",")
