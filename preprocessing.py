@@ -3,7 +3,8 @@
 """
 Created on Fri Dec 11 19:55:41 2020
 
-@author: Coronado
+@author: Coronado 
+@author: Bernard
 """
 
 import pandas as pd
@@ -33,7 +34,8 @@ pop_col = filtered_df['popularity'] + 0.5 - filtered_df['popularity'].mean()
 
 
 filtered_df['popularity'] = round(pop_col)
-#filtered_df['popularity'] =  round(filtered_df['popularity'] + 0.5 - mean(filtered_df['popularity']))
 
+filtered_df = filtered_df[['valence','acousticness','danceability','duration_ms','energy','explicit',
+                          'instrumentalness','key','liveness','loudness','mode','speechiness','tempo','popularity']]
 # Export data to csv
-#np.savetxt("filtered_data_set.csv", filtered_data_set, delimiter=",")
+np.savetxt("filtered_data_set.csv", filtered_df, delimiter=",")
