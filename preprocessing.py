@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Dec 11 19:55:41 2020
+
+@author: Coronado
+"""
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
@@ -17,39 +25,15 @@ filtered_data_set = filtered_data_set.drop(['year','id', 'name','artists','relea
 
 # Normalize the x features to range 0 to 1.
 scaler = MinMaxScaler();
-filtered_data_set = scaler.fit_transform(filtered_data_set)
+scaled_filtered_ds = scaler.fit_transform(filtered_data_set)
+
+filtered_df = pd.DataFrame(data = scaled_filtered_ds, columns = filtered_data_set.columns)
+
+pop_col = filtered_df['popularity'] + 0.5 - filtered_df['popularity'].mean()
+
+
+filtered_df['popularity'] = round(pop_col)
+#filtered_df['popularity'] =  round(filtered_df['popularity'] + 0.5 - mean(filtered_df['popularity']))
 
 # Export data to csv
-np.savetxt("filtered_data_set.csv", filtered_data_set, delimiter=",")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#np.savetxt("filtered_data_set.csv", filtered_data_set, delimiter=",")
