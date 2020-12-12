@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Dec 11 19:55:41 2020
-
 @author: Coronado 
 @author: Bernard
 """
@@ -30,12 +29,24 @@ scaled_filtered_ds = scaler.fit_transform(filtered_data_set)
 
 filtered_df = pd.DataFrame(data = scaled_filtered_ds, columns = filtered_data_set.columns)
 
-pop_col = filtered_df['popularity'] + 0.5 - filtered_df['popularity'].mean()
+#get the mean
+mu = filtered_df['popularity'].mean()
+
+#get the standard deviation
+std =  filtered_df['popularity'].std()
+
+
+#only the songs 0.5*std are considered hits
+pop_col = filtered_df['popularity'] + 0.5 - mu - (0.5*std)
 
 
 filtered_df['popularity'] = round(pop_col)
 
 filtered_df = filtered_df[['valence','acousticness','danceability','duration_ms','energy','explicit',
                           'instrumentalness','key','liveness','loudness','mode','speechiness','tempo','popularity']]
+
+#export with labels
+filtered_df.to_csv("filtered_data_set.csv", index = False)
+
 # Export data to csv
 np.savetxt("filtered_data_set.csv", filtered_df, delimiter=",")
