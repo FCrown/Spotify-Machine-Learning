@@ -7,8 +7,6 @@ Description: This script trains a decision tree classifier using a specified csv
              file. In addition, the script will print out a classification report.
              The tree may be visualized if the visualize is set to True. 
              
-             Note: Adjust the depth of the tree at the declaration of the decision
-                   tree instance when visualizing to reduce the size.
                    
 @author: Coronado
 @author: Bernard
@@ -16,8 +14,6 @@ Description: This script trains a decision tree classifier using a specified csv
 
 import pandas as pd
 import numpy as mp
-
-import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
 
@@ -32,8 +28,6 @@ from six import StringIO
 from sklearn.tree import export_graphviz
 
 import pydotplus
- 
-import matplotlib.image as mpimg
 
 import datetime
 
@@ -48,8 +42,10 @@ date_str = now.strftime("%Y-%m-%d %H:%M:%S")
 ###HITS DATA SETS
 filename = "hits_pca_data_set"
 
-visualize = False
+visualize = False #setting to true makes and saves an image of the tree
 
+
+##################### get and prepare the data #########################
 #get the data
 data = pd.read_csv(filename + ".csv")
 
@@ -67,8 +63,14 @@ outputs = data[y_name]
 X_train, X_test, Y_train, Y_test = train_test_split(inputs, outputs, train_size = 0.7,
                                                     shuffle = True)
 
+##################### learn the decision tree model #########################
 #create an instance of a decsion tree classifier
-dtree = DecisionTreeClassifier()#max_depth = 3) #set depth for visual
+
+#will not limit depth if a visual is not needed
+if not visualize:
+    dtree = DecisionTreeClassifier()
+else:
+    dtree = DecisionTreeClassifier(max_depth = 3) #set depth for visual
 
 #train the decision  tree
 dtree.fit(X_train, Y_train)
@@ -82,6 +84,7 @@ accuracy = accuracy_score(Y_test,dtree_predict)
 #obtain the classification report for the trained model given the test output
 #and the predicted values
 class_report = classification_report(Y_test, dtree_predict)
+
 ###################### output decision tree report #########################
 
 #print the confusion matrix
@@ -98,13 +101,13 @@ print(class_report)
 
 print('scikit accuracy score function:     ' + str(round(accuracy*100, 1) ) + '%\n\n')
 
-print('Value counts for hit(1) and non-hit songs (0)')
+print('Value counts for hit (1) and non-hit songs (0) in the test output')
 print(Y_test.value_counts())
 
 ###################### visualizing the decision tree #########################
 if visualize:
     #create a savename for the image
-    imageName = "DT_" + filename + ".png"
+    imageName = "DT_" + filename + "_"+ date_str + ".png"
     
     dot_data = StringIO()
     
@@ -114,10 +117,4 @@ if visualize:
     graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
     
     graph.write_png(imageName)
-
-
-
-
-
-
 
