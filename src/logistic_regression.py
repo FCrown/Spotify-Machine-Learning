@@ -20,42 +20,77 @@ from sklearn.metrics import accuracy_score
 
 from sklearn.metrics import classification_report
 
+import datetime
+
+now = datetime.datetime.now()
+
+date_str = now.strftime("%Y-%m-%d %H:%M:%S")
+
+###OTHER  DATA SETS
+#filename = 'filtered_data_set.csv'
+#filename = "pca_data_set.csv"
+
+###HITS DATA SETS
+filename = "Hits_data_set.csv"
+
+##################### get and prepare the data #########################
 
 #get the data
-data = pd.read_csv('filtered_data_set.csv')
+data = pd.read_csv(filename)
 
+#name of the output
+y_name = data.columns[len(data.columns.values)-1]
 
 #get the inputs
-inputs = data.drop('popularity', axis = 1)
+# inputs = data.drop('popularity', axis = 1)
+inputs = data.drop(y_name, axis = 1)
 
 #get the outputs
-outputs = data['popularity']
+outputs = data[y_name]
 
 #split the data into training and testing data
 X_train, X_test, Y_train, Y_test = train_test_split(inputs, outputs, train_size = 0.7,
-                                                    shuffle = True)
+                                                    shuffle = True, random_state = 40)
+
+##################### learn the Logisitic Regression model #########################
+# Default Parameters: (penalty='l2', *, dual=False, tol=0.0001, C=1.0, fit_intercept=True, 
+# intercept_scaling=1, class_weight=None, random_state=None, solver='lbfgs', 
+# max_iter=100, multi_class='auto', verbose=0, warm_start=False, 
+# n_jobs=None, l1_ratio=None)
+
 #start an instance of a logistic regression model
-logmodel = LogisticRegression()
+logmodel = LogisticRegression()#fit_intercept = True)
 
 #train the model with the training data
 logmodel.fit(X_train,Y_train)
 
 #obtain the predictions using the test data
-predictions = logmodel.predict(X_test)
+logr_predict = logmodel.predict(X_test)
 
-#print a classification report using the predictions and actual output
-print('evaluation report')
-print(classification_report(Y_test, predictions))
+#print(confusion_matrix(Y_test,rfc_predict))
+accuracy = accuracy_score(Y_test,logr_predict)
 
-#determine the accuracy alone using scikit function
-accuracy = accuracy_score(Y_test,predictions)
+###################### output Logistic regression report #########################
+
+print('\n')
+
+print('Logistic Regression Report \n') 
+
+print('File name:\t ' + filename)
+print('Date:\t'+date_str + '\n')
+
+print(classification_report(Y_test, logr_predict))
+
 print('scikit accuracy score function:     ' + str(round(accuracy*100, 1) ) + '%\n\n')
+
+print('Value counts for hit(1) and non-hit songs (0)')
+print(Y_test.value_counts())
 
 #determine the accuracy manually for comfirmation
 correct = 0
 total = 0
 for x in range(len(Y_test)):
-    if Y_test.values[x] == predictions[x]:
+    if Y_test.values[x] == logr_predict[x]:
         correct +=1
     total+=1
     
