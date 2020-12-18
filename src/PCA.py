@@ -29,16 +29,18 @@ from sklearn.metrics import accuracy_score
 
 from sklearn.decomposition import PCA
 
+import matplotlib.pyplot as plt
+
+import seaborn as sns
+
 #get the data
 # data = pd.read_csv('filtered_data_set.csv')
 
+filenames = ["Hits_data_set.csv", "2016-19_filtered_data_set.csv"]
 
-# filename = "Hits_data_set.csv"
+filename = filenames[0]
 
-filename = "2016-19_filtered_data_set.csv"
-
-savename = "pca_"+filename
-
+savename = 'pca_'+filename
 
 data = pd.read_csv(filename)
 
@@ -80,33 +82,54 @@ eigen_values = pca.explained_variance_
 #get the explained variance ratio (sum_lambda_1_k)/total_sum_lambda)
 expl_var_ratio = pca.explained_variance_ratio_
 
-#determine the number of k features needed 
-s = 0
-k = 0
-for x in expl_var_ratio:
-    k+=1
-    s+=x
-    if s>0.9:
-        break
 
-#run PCA again to get k components
-pca = PCA(n_components = k)
-pca.fit(inputs)
+
+################### PCA output ################################################
+#run PCA again to get k components with explained variance > 0.9
+pca_k = PCA(n_components = 0.9)
+pca_k.fit(inputs)
 
 #transform the inputs
-X_pca = pca.transform(inputs)
+X_k_pca = pca_k.transform(inputs)
 
 #turn new feature matrix into a dataframe
-X_pca_df = pd.DataFrame(data = X_pca)
+X_k_pca_df = pd.DataFrame(data = X_k_pca)
 
 #get pca optimized data set
-pca_data_set = X_pca_df.join(outputs)
+pca_data_set = X_k_pca_df.join(outputs)
 
 #export the dataset
 pca_data_set.to_csv(savename, index = False)
 
+###################### Visualizations ######################################
+##scatter plot
+x_pca = pca.transform(inputs)
 
+#plot the first two components and color the datapoints that are hits
+plt.figure(figsize = (8,6))
+plt.scatter(x_pca[:,0], x_pca[:,1], c = data[y_name], cmap = 'plasma')
+plt.xlabel('First Principal Component')
+plt.title(savename)
+plt.ylabel('Second Principal Component')
 
+df_comp = pd.DataFrame(pca.components_, columns = inputs.columns)
+
+#produce a heatmap showing the principle components with respect to the 
+#features
+plt.figure(figsize = (12,8))
+plt.title(savename + '\nAll PCA Components')
+plt.tight_layout(pad=0)
+sns.heatmap(df_comp, cmap = 'plasma')
+
+## heat ma[]
+df_k_comp = pd.DataFrame(pca_k.components_, columns = inputs.columns)
+
+#produce a heatmap showing the principle components with respect to the 
+#features
+plt.figure(figsize = (12,8))
+plt.title(savename + '\nPCA With k-Components (Explained variance >0.9)')
+plt.tight_layout(pad=0)
+sns.heatmap(df_k_comp, cmap = 'plasma')
 
 
 

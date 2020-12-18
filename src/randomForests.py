@@ -34,8 +34,10 @@ date_str = now.strftime("%Y-%m-%d %H:%M:%S")
 #filename = 'filtered_data_set.csv'
 #filename = "pca_data_set.csv"
 
-###HITS DATA SETS
-filename = "hits_data_set.csv"
+filenames = ["Hits_data_set.csv", "pca_Hits_data_set.csv", "2016-19_filtered_data_set.csv", "pca_2016-19_filtered_data_set.csv"]
+
+filename = filenames[2]
+
 
 ##################### get and prepare the data #########################
 #get the data

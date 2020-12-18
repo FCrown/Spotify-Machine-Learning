@@ -34,7 +34,6 @@ spotify_dat = spotify_dat[spotify_dat['year'].values >= 1999]
 
 hit_data = spotify_dat[spotify_dat['name'].isin(billboard_dat['Name'])]
 
-
 #construct a hit column to add to the scaled dataset
 hit_data['hit'] = 1
 
@@ -62,41 +61,11 @@ filtered_df = pd.DataFrame(data = scaled_red_spot, columns = reduced_spot.column
 filtered_df = filtered_df[['valence','acousticness','danceability','duration_ms','energy','explicit',
                          'instrumentalness','key','liveness','loudness','mode','speechiness','tempo','popularity','hit']]
 
+
+########################### Plot and export ##########################################
+plt.scatter(spotify_dat['year'], filtered_df['popularity'],c = filtered_df['hit'] , cmap = 'plasma')
+
+
 #export with labels
 filtered_df.to_csv(savename, index = False)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#hit songs are those that were in billboard top 100 and pass a threshold popularity
-#eliminates any songs that might have had same names 
-# billboard_artists = 
-
-# #only get data with popularity greater than 0.05
-# spot_in_bill = spotify_datafiltered_df['popularity'].values > 0.05]
-
-# Drop uneeded columns from filtered data
-#filt_feat_set = spotify_data.drop(['year','id', 'name','artists','release_date'], axis=1)
-
-# # Normalize the x features to range 0 to 1.
-# scaler = MinMaxScaler();
-# scaled_filt_feat_ds = scaler.fit_transform(filt_feat_set)
-
-# filtered_df = pd.DataFrame(data = scaled_filt_feat_ds, columns = filt_feat_set.columns)

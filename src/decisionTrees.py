@@ -7,7 +7,6 @@ Description: This script trains a decision tree classifier using a specified csv
              file. In addition, the script will print out a classification report.
              The tree may be visualized if the visualize is set to True. 
              
-                   
 @author: Coronado
 @author: Bernard
 """
@@ -35,22 +34,19 @@ import datetime
 now = datetime.datetime.now()
 date_str = now.strftime("%Y-%m-%d %H:%M:%S")
 
-###OTHER  DATA SETS
-#filename = 'filtered_data_set.csv'
-#filename = "pca_data_set.csv"
+filenames = ["Hits_data_set.csv", "pca_Hits_data_set.csv", "2016-19_filtered_data_set.csv", "pca_2016-19_filtered_data_set.csv"]
 
-###HITS DATA SETS
-filename = "hits_pca_data_set"
+filename = filenames[2]
+
 
 visualize = False #setting to true makes and saves an image of the tree
 
-
 ##################### get and prepare the data #########################
 #get the data
-data = pd.read_csv(filename + ".csv")
+data = pd.read_csv(filename)
 
 #name of the output
-y_name = 'hit'
+y_name = data.columns[len(data.columns.values)-1]
 
 #get the inputs
 # inputs = data.drop('popularity', axis = 1)
@@ -64,11 +60,19 @@ X_train, X_test, Y_train, Y_test = train_test_split(inputs, outputs, train_size 
                                                     shuffle = True)
 
 ##################### learn the decision tree model #########################
+##Documentation: class sklearn.tree.DecisionTreeClassifier(*, 
+#criterion='gini', splitter='best', max_depth=None, min_samples_split=2, 
+#min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, 
+#random_state=None, max_leaf_nodes=None, min_impurity_decrease=0.0, 
+#min_impurity_split=None, class_weight=None, presort='deprecated', ccp_alpha=0.0)
+
 #create an instance of a decsion tree classifier
+maxleafnodes = 100
+depth = 10
 
 #will not limit depth if a visual is not needed
 if not visualize:
-    dtree = DecisionTreeClassifier()
+    dtree = DecisionTreeClassifier(max_depth = depth, max_leaf_nodes = maxleafnodes)
 else:
     dtree = DecisionTreeClassifier(max_depth = 3) #set depth for visual
 
@@ -87,12 +91,16 @@ class_report = classification_report(Y_test, dtree_predict)
 
 ###################### output decision tree report #########################
 
+print("###################### Report #########################")
 #print the confusion matrix
 print(confusion_matrix(Y_test, dtree_predict))
 
 print('\n')
 
 print('Decision Tree Report \n') 
+
+print('Depth: '+ str(dtree.tree_.max_depth) + '\t Node Count: ' + str(dtree.tree_.node_count) + 
+      '\t Max Leaf Nodes: ' + str(maxleafnodes) + '\n') 
 
 print('File name:\t ' + filename + ".csv")
 print('Date:\t'+date_str + '\n')

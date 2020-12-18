@@ -30,8 +30,10 @@ date_str = now.strftime("%Y-%m-%d %H:%M:%S")
 #filename = 'filtered_data_set.csv'
 #filename = "pca_data_set.csv"
 
-###HITS DATA SETS
-filename = "Hits_data_set.csv"
+filenames = ["Hits_data_set.csv", "pca_Hits_data_set.csv", "2016-19_filtered_data_set.csv", "pca_2016-19_filtered_data_set.csv"]
+
+filename = filenames[2]
+
 
 ##################### get and prepare the data #########################
 
@@ -50,7 +52,7 @@ outputs = data[y_name]
 
 #split the data into training and testing data
 X_train, X_test, Y_train, Y_test = train_test_split(inputs, outputs, train_size = 0.7,
-                                                    shuffle = True, random_state = 40)
+                                                    shuffle = True)
 
 ##################### learn the Logisitic Regression model #########################
 # Default Parameters: (penalty='l2', *, dual=False, tol=0.0001, C=1.0, fit_intercept=True, 
